@@ -1,0 +1,27 @@
+{
+  "name": "flash-anzan",
+  "version": "1.0.0",
+  "description": "mental math with flashing numbers",
+  "main": "index.js",
+  "bin": {
+    "flash-anzan": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djkazunoko/flash-anzan.git"
+  },
+  "keywords": [
+    "mental math",
+    "mental arithmetic",
+    "flashing numbers"
+  ],
+  "author": "djkazunoko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/djkazunoko/flash-anzan/issues"
+  },
+  "homepage": "https://github.com/djkazunoko/flash-anzan#readme"
+}
