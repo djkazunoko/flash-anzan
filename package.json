@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/djkazunoko/flash-anzan/issues"
   },
-  "homepage": "https://github.com/djkazunoko/flash-anzan#readme"
+  "homepage": "https://github.com/djkazunoko/flash-anzan#readme",
+  "dependencies": {
+    "enquirer": "^2.3.6"
+  }
 }
