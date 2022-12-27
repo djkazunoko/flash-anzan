@@ -67,10 +67,11 @@ async function countDown() {
 }
 
 async function displayNumber() {
-  const num = Math.floor(
-    Math.random() * Math.pow(10, options.digits) * 0.9 +
-      Math.pow(10, options.digits - 1)
-  );
+  const prevNum = terms.slice(-1)[0];
+  let num = getNumber();
+  while (num == prevNum) {
+    num = getNumber();
+  }
 
   correctAnswer += num;
   terms.push(num);
@@ -78,6 +79,13 @@ async function displayNumber() {
   process.stdout.clearLine(0);
   process.stdout.cursorTo(0);
   process.stdout.write(String(num));
+}
+
+function getNumber() {
+  return Math.floor(
+    Math.random() * Math.pow(10, options.digits) * 0.9 +
+      Math.pow(10, options.digits - 1)
+  );
 }
 
 async function checkAnswer() {
