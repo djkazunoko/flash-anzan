@@ -58,12 +58,17 @@ async function flashNumbers() {
 }
 
 async function countDown() {
-  console.log("\x1b[31m%s\x1b[0m", "Ready");
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  console.log("\x1b[33m%s\x1b[0m", "Set");
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  console.log("\x1b[32m%s\x1b[0m", "Go!!");
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const texts = [
+    "\x1b[31mReady\x1b[0m",
+    "\x1b[33mSet\x1b[0m",
+    "\x1b[32mGo!\x1b[0m",
+  ];
+  for (const text of texts) {
+    process.stdout.clearLine(0);
+    process.stdout.cursorTo(0);
+    process.stdout.write(text);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
 }
 
 async function displayNumber() {
