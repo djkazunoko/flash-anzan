@@ -17,22 +17,29 @@ async function setOptions() {
       type: "input",
       name: "digits",
       message: "Number of Digits",
+      validate: confirmAnswerValidator,
     },
     {
       type: "input",
       name: "displayCount",
       message: "Display Count",
+      validate: confirmAnswerValidator,
     },
     {
       type: "input",
       name: "displayInterval",
       message: "Display Interval(seconds)",
+      validate: confirmAnswerValidator,
     },
   ]);
 
   options.digits = Number(response.digits);
   options.displayCount = Number(response.displayCount);
   options.displayInterval = Number(response.displayInterval);
+}
+
+function confirmAnswerValidator(input) {
+  return isNaN(input) ? "Please input a Number" : true;
 }
 
 async function flashNumbers() {
@@ -85,6 +92,7 @@ async function inputAnswer() {
     type: "input",
     name: "answer",
     message: "Please enter your answer",
+    validate: confirmAnswerValidator,
   };
 
   return await prompt(question);
