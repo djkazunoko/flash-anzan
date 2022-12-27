@@ -95,11 +95,17 @@ function getNumber() {
 
 async function checkAnswer() {
   const answer = await inputAnswer();
-
-  const result = answer.answer == correctAnswer ? "Correct!!" : "Wrong...";
+  const result =
+    answer.answer == correctAnswer
+      ? "\x1b[32mCorrect!\x1b[0m"
+      : "\x1b[31mWrong...\x1b[0m";
+  const yourAnswer =
+    answer.answer == correctAnswer
+      ? `\x1b[32m${answer.answer}\x1b[0m`
+      : `\x1b[31m${answer.answer}\x1b[0m`;
   console.log(result);
-  console.log(`your answer: ${answer.answer}`);
-  console.log(`correct answer: ${correctAnswer}`);
+  console.log(`your answer: ${yourAnswer}`);
+  console.log(`correct answer: \x1b[32m${correctAnswer}\x1b[0m`);
   console.log(`${terms.join(" + ")} = ${correctAnswer}`);
 }
 
