@@ -18,18 +18,21 @@ async function setOptions() {
       name: "digits",
       message: "Number of Digits",
       validate: confirmAnswerValidator,
+      initial: 1,
     },
     {
       type: "input",
       name: "displayCount",
       message: "Display Count",
       validate: confirmAnswerValidator,
+      initial: 10,
     },
     {
       type: "input",
       name: "displayInterval",
       message: "Display Interval(seconds)",
       validate: confirmAnswerValidator,
+      initial: 1,
     },
   ]);
 
@@ -93,6 +96,7 @@ async function inputAnswer() {
     name: "answer",
     message: "Please enter your answer",
     validate: confirmAnswerValidator,
+    initial: 0,
   };
 
   return await prompt(question);
