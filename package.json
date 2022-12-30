@@ -1,6 +1,6 @@
 {
   "name": "flash-anzan",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "mental math with flashing numbers",
   "main": "index.js",
   "bin": {
