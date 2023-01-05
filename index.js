@@ -1,18 +1,16 @@
 #! /usr/bin/env node
 
 const { prompt } = require("enquirer");
-const options = {};
 let correctAnswer = 0;
 let terms = [];
 
 async function main() {
-  await setOptions();
   await flashNumbers();
   await checkAnswer();
 }
 
-async function setOptions() {
-  const response = await prompt([
+async function getOptions() {
+  return await prompt([
     {
       type: "input",
       name: "digits",
@@ -35,10 +33,6 @@ async function setOptions() {
       initial: 1,
     },
   ]);
-
-  options.digits = Number(response.digits);
-  options.displayCount = Number(response.displayCount);
-  options.displayInterval = Number(response.displayInterval);
 }
 
 function confirmAnswerValidator(input) {
@@ -46,9 +40,10 @@ function confirmAnswerValidator(input) {
 }
 
 async function flashNumbers() {
+  const options = await getOptions();
   await countDown();
   for (let i = 0; i < options.displayCount; i++) {
-    await displayNumber();
+    await displayNumber(options);
     await new Promise((resolve) =>
       setTimeout(resolve, options.displayInterval * 1000)
     );
@@ -71,11 +66,11 @@ async function countDown() {
   }
 }
 
-async function displayNumber() {
+async function displayNumber(options) {
   const prevNum = terms.slice(-1)[0];
-  let num = getNumber();
+  let num = getNumber(options);
   while (num == prevNum) {
-    num = getNumber();
+    num = getNumber(options);
   }
 
   correctAnswer += num;
@@ -86,7 +81,7 @@ async function displayNumber() {
   process.stdout.write(String(num));
 }
 
-function getNumber() {
+function getNumber(options) {
   return Math.floor(
     Math.random() * Math.pow(10, options.digits) * 0.9 +
       Math.pow(10, options.digits - 1)
