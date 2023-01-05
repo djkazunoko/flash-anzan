@@ -1,12 +1,10 @@
 #! /usr/bin/env node
 
 const { prompt } = require("enquirer");
-let correctAnswer = 0;
-let terms = [];
 
 async function main() {
-  await flashNumbers();
-  await checkAnswer();
+  const terms = await flashNumbers();
+  await checkAnswer(terms);
 }
 
 async function getOptions() {
@@ -41,15 +39,29 @@ function confirmAnswerValidator(input) {
 
 async function flashNumbers() {
   const options = await getOptions();
+  const terms = [];
+
   await countDown();
+
   for (let i = 0; i < options.displayCount; i++) {
-    await displayNumber(options);
+    const prevNum = terms.slice(-1)[0];
+    let num = getNumber(options);
+    while (num == prevNum) {
+      num = getNumber(options);
+    }
+    terms.push(num);
+
+    await displayNumber(num);
+
     await new Promise((resolve) =>
       setTimeout(resolve, options.displayInterval * 1000)
     );
   }
+
   process.stdout.clearLine(0);
   process.stdout.cursorTo(0);
+
+  return terms;
 }
 
 async function countDown() {
@@ -66,16 +78,7 @@ async function countDown() {
   }
 }
 
-async function displayNumber(options) {
-  const prevNum = terms.slice(-1)[0];
-  let num = getNumber(options);
-  while (num == prevNum) {
-    num = getNumber(options);
-  }
-
-  correctAnswer += num;
-  terms.push(num);
-
+async function displayNumber(num) {
   process.stdout.clearLine(0);
   process.stdout.cursorTo(0);
   process.stdout.write(String(num));
@@ -88,7 +91,8 @@ function getNumber(options) {
   );
 }
 
-async function checkAnswer() {
+async function checkAnswer(terms) {
+  const correctAnswer = terms.reduce((sum, term) => sum + term);
   const answer = await inputAnswer();
   const result =
     answer.answer == correctAnswer
@@ -98,6 +102,7 @@ async function checkAnswer() {
     answer.answer == correctAnswer
       ? `\x1b[32m${answer.answer}\x1b[0m`
       : `\x1b[31m${answer.answer}\x1b[0m`;
+
   console.log(result);
   console.log(`your answer: ${yourAnswer}`);
   console.log(`correct answer: \x1b[32m${correctAnswer}\x1b[0m`);
