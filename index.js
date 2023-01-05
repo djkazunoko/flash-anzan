@@ -7,6 +7,33 @@ async function main() {
   await checkAnswer(terms);
 }
 
+async function flashNumbers() {
+  const options = await getOptions();
+  const terms = [];
+
+  await countDown();
+
+  for (let i = 0; i < options.displayCount; i++) {
+    const prevNum = terms.slice(-1)[0];
+    let num = getNumber(options);
+    while (num == prevNum) {
+      num = getNumber(options);
+    }
+    terms.push(num);
+
+    await displayNumber(num);
+
+    await new Promise((resolve) =>
+      setTimeout(resolve, options.displayInterval * 1000)
+    );
+  }
+
+  process.stdout.clearLine(0);
+  process.stdout.cursorTo(0);
+
+  return terms;
+}
+
 async function getOptions() {
   return await prompt([
     {
@@ -37,33 +64,6 @@ function confirmAnswerValidator(input) {
   return isNaN(input) ? "Please input a Number" : true;
 }
 
-async function flashNumbers() {
-  const options = await getOptions();
-  const terms = [];
-
-  await countDown();
-
-  for (let i = 0; i < options.displayCount; i++) {
-    const prevNum = terms.slice(-1)[0];
-    let num = getNumber(options);
-    while (num == prevNum) {
-      num = getNumber(options);
-    }
-    terms.push(num);
-
-    await displayNumber(num);
-
-    await new Promise((resolve) =>
-      setTimeout(resolve, options.displayInterval * 1000)
-    );
-  }
-
-  process.stdout.clearLine(0);
-  process.stdout.cursorTo(0);
-
-  return terms;
-}
-
 async function countDown() {
   const texts = [
     "\x1b[31mReady\x1b[0m",
@@ -78,17 +78,17 @@ async function countDown() {
   }
 }
 
-async function displayNumber(num) {
-  process.stdout.clearLine(0);
-  process.stdout.cursorTo(0);
-  process.stdout.write(String(num));
-}
-
 function getNumber(options) {
   return Math.floor(
     Math.random() * Math.pow(10, options.digits) * 0.9 +
       Math.pow(10, options.digits - 1)
   );
+}
+
+async function displayNumber(num) {
+  process.stdout.clearLine(0);
+  process.stdout.cursorTo(0);
+  process.stdout.write(String(num));
 }
 
 async function checkAnswer(terms) {
