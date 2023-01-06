@@ -40,28 +40,36 @@ async function getOptions() {
       type: "input",
       name: "digits",
       message: "Number of Digits",
-      validate: confirmAnswerValidator,
+      validate: isPositiveInteger,
       initial: 1,
     },
     {
       type: "input",
       name: "displayCount",
       message: "Display Count",
-      validate: confirmAnswerValidator,
+      validate: isPositiveInteger,
       initial: 10,
     },
     {
       type: "input",
       name: "displayInterval",
       message: "Display Interval(seconds)",
-      validate: confirmAnswerValidator,
+      validate: isPositiveNumber,
       initial: 1,
     },
   ]);
 }
 
-function confirmAnswerValidator(input) {
-  return isNaN(input) ? "Please input a Number" : true;
+function isPositiveInteger(input) {
+  const num = Number(input);
+  return Number.isInteger(num) && num > 0
+    ? true
+    : "Please input a Positive Integer";
+}
+
+function isPositiveNumber(input) {
+  const num = Number(input);
+  return num > 0 ? true : "Please input a Positive Number";
 }
 
 async function countDown() {
@@ -114,8 +122,8 @@ async function inputAnswer() {
     type: "input",
     name: "answer",
     message: "Please enter your answer",
-    validate: confirmAnswerValidator,
-    initial: 0,
+    validate: isPositiveInteger,
+    initial: 10,
   };
 
   return await prompt(question);
