@@ -16,7 +16,7 @@ async function flashNumbers() {
   for (let i = 0; i < options.displayCount; i++) {
     const prevNum = terms.slice(-1)[0];
     let num = getNumber(options);
-    while (num == prevNum) {
+    while (num === prevNum) {
       num = getNumber(options);
     }
     terms.push(num);
@@ -103,11 +103,11 @@ async function checkAnswer(terms) {
   const correctAnswer = terms.reduce((sum, term) => sum + term);
   const answer = await inputAnswer();
   const result =
-    answer.answer == correctAnswer
+    Number(answer.answer) === correctAnswer
       ? "\x1b[32mCorrect!\x1b[0m"
       : "\x1b[31mWrong...\x1b[0m";
   const yourAnswer =
-    answer.answer == correctAnswer
+    Number(answer.answer) === correctAnswer
       ? `\x1b[32m${answer.answer}\x1b[0m`
       : `\x1b[31m${answer.answer}\x1b[0m`;
 
