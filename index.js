@@ -1,60 +1,75 @@
 #! /usr/bin/env node
 
 const { prompt } = require("enquirer");
-const options = {};
-let correctAnswer = 0;
-let terms = [];
 
 async function main() {
-  await setOptions();
-  await flashNumbers();
-  await checkAnswer();
+  const terms = await flashNumbers();
+  await checkAnswer(terms);
 }
 
-async function setOptions() {
-  const response = await prompt([
+async function flashNumbers() {
+  const options = await getOptions();
+  const terms = [];
+
+  await countDown();
+
+  for (let i = 0; i < options.displayCount; i++) {
+    const prevNum = terms.slice(-1)[0];
+    let num = getNumber(options);
+    while (num === prevNum) {
+      num = getNumber(options);
+    }
+    terms.push(num);
+
+    await displayNumber(num);
+
+    await new Promise((resolve) =>
+      setTimeout(resolve, options.displayInterval * 1000)
+    );
+  }
+
+  process.stdout.clearLine(0);
+  process.stdout.cursorTo(0);
+
+  return terms;
+}
+
+async function getOptions() {
+  return await prompt([
     {
       type: "input",
       name: "digits",
       message: "Number of Digits",
-      validate: confirmAnswerValidator,
+      validate: isPositiveInteger,
       initial: 1,
     },
     {
       type: "input",
       name: "displayCount",
       message: "Display Count",
-      validate: confirmAnswerValidator,
+      validate: isPositiveInteger,
       initial: 10,
     },
     {
       type: "input",
       name: "displayInterval",
       message: "Display Interval(seconds)",
-      validate: confirmAnswerValidator,
+      validate: isPositiveNumber,
       initial: 1,
     },
   ]);
-
-  options.digits = Number(response.digits);
-  options.displayCount = Number(response.displayCount);
-  options.displayInterval = Number(response.displayInterval);
 }
 
-function confirmAnswerValidator(input) {
-  return isNaN(input) ? "Please input a Number" : true;
+function isPositiveInteger(input) {
+  const num = Number(input);
+  return Number.isInteger(num) && num > 0
+    ? true
+    : "Please input a Positive Integer";
 }
 
-async function flashNumbers() {
-  await countDown();
-  for (let i = 0; i < options.displayCount; i++) {
-    await displayNumber();
-    await new Promise((resolve) =>
-      setTimeout(resolve, options.displayInterval * 1000)
-    );
-  }
-  process.stdout.clearLine(0);
-  process.stdout.cursorTo(0);
+function isPositiveNumber(input) {
+  const num = Number(input);
+  return num > 0 ? true : "Please input a Positive Number";
 }
 
 async function countDown() {
@@ -71,38 +86,31 @@ async function countDown() {
   }
 }
 
-async function displayNumber() {
-  const prevNum = terms.slice(-1)[0];
-  let num = getNumber();
-  while (num == prevNum) {
-    num = getNumber();
-  }
-
-  correctAnswer += num;
-  terms.push(num);
-
-  process.stdout.clearLine(0);
-  process.stdout.cursorTo(0);
-  process.stdout.write(String(num));
-}
-
-function getNumber() {
+function getNumber(options) {
   return Math.floor(
     Math.random() * Math.pow(10, options.digits) * 0.9 +
       Math.pow(10, options.digits - 1)
   );
 }
 
-async function checkAnswer() {
+async function displayNumber(num) {
+  process.stdout.clearLine(0);
+  process.stdout.cursorTo(0);
+  process.stdout.write(String(num));
+}
+
+async function checkAnswer(terms) {
+  const correctAnswer = terms.reduce((sum, term) => sum + term);
   const answer = await inputAnswer();
   const result =
-    answer.answer == correctAnswer
+    Number(answer.answer) === correctAnswer
       ? "\x1b[32mCorrect!\x1b[0m"
       : "\x1b[31mWrong...\x1b[0m";
   const yourAnswer =
-    answer.answer == correctAnswer
+    Number(answer.answer) === correctAnswer
       ? `\x1b[32m${answer.answer}\x1b[0m`
       : `\x1b[31m${answer.answer}\x1b[0m`;
+
   console.log(result);
   console.log(`your answer: ${yourAnswer}`);
   console.log(`correct answer: \x1b[32m${correctAnswer}\x1b[0m`);
@@ -114,8 +122,8 @@ async function inputAnswer() {
     type: "input",
     name: "answer",
     message: "Please enter your answer",
-    validate: confirmAnswerValidator,
-    initial: 0,
+    validate: isPositiveInteger,
+    initial: 10,
   };
 
   return await prompt(question);
